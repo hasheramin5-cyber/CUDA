@@ -1,0 +1,54 @@
+# CUDA / C++ Build Files
+*.o
+*.obj
+*.exe
+*.out
+
+# CUDA Compiled Files
+*.cubin
+*.ptx
+*.fatbin
+
+# Build Directories
+build/
+cmake-build-*/
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install_manifest.txt
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary Files
+*.tmp
+*.temp
