@@ -1,0 +1,71 @@
+name: Repository Validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate Repository Structure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check required files
+        shell: bash
+        run: |
+          set -e
+
+          required_files=(
+            "README.md"
+            "LICENSE"
+            "CONTRIBUTING.md"
+            "CODE_OF_CONDUCT.md"
+            ".gitignore"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "Missing required file: $file"
+              exit 1
+            fi
+
+            echo "Found: $file"
+          done
+
+      - name: Check CUDA project directories
+        shell: bash
+        run: |
+          set -e
+
+          project_count=$(find . -maxdepth 1 -type d -name '[0-9][0-9]. *' | wc -l)
+
+          echo "CUDA project directories found: $project_count"
+
+          if [ "$project_count" -lt 10 ]; then
+            echo "Expected at least 10 CUDA project directories."
+            exit 1
+          fi
+
+      - name: Check CUDA source files
+        shell: bash
+        run: |
+          set -e
+
+          cuda_files=$(find . -type f -name '*.cu' | wc -l)
+
+          echo "CUDA source files found: $cuda_files"
+
+          if [ "$cuda_files" -eq 0 ]; then
+            echo "No CUDA source files were found."
+            exit 1
+          fi
+
+      - name: Validation completed
+        run: echo "Repository validation completed successfully."
