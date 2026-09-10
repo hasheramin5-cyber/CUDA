@@ -39,21 +39,75 @@ jobs:
             echo "Found: $file"
           done
 
-      - name: Check CUDA project directories
+      - name: Check CUDA project structure
         shell: bash
         run: |
           set -e
 
-          project_count=$(find . -maxdepth 1 -type d -name '[0-9][0-9]. *' | wc -l)
+          projects=(
+            "01. Vector Addition"
+            "02. Vector Multiplication"
+            "03. Matrix Addition"
+            "04. Matrix Multiplication"
+            "05. Parallel Reduction"
+            "06. Image Blur"
+            "07. Edge Detection"
+            "08. Convolution"
+            "09. Matrix Transpose"
+            "10. CPU vs GPU Benchmark"
+            "11. Device Query"
+            "12. GPU Memory Bandwidth"
+            "13. Parallel Histogram"
+            "14. Image Histogram"
+            "15. Monte Carlo Simulation"
+            "16. cuBLAS Matrix Multiplication"
+            "17. FFT Processing"
+            "18. GPU Random Numbers"
+            "19. CUDA Streams"
+            "20. CUDA Graphs"
+            "21. Unified Memory"
+            "22. Pinned Memory"
+            "23. Sparse Matrix Operations"
+            "24. Linear System Solver"
+            "25. GPU Image Processing Pipeline"
+          )
 
-          echo "CUDA project directories found: $project_count"
+          for project in "${projects[@]}"; do
+            if [ ! -d "$project" ]; then
+              echo "Missing project directory: $project"
+              exit 1
+            fi
 
-          if [ "$project_count" -lt 10 ]; then
-            echo "Expected at least 10 CUDA project directories."
-            exit 1
-          fi
+            echo "Found project: $project"
+          done
 
-      - name: Check CUDA source files
+      - name: Check project files
+        shell: bash
+        run: |
+          set -e
+
+          for project in [0-9][0-9].\ *; do
+            if [ ! -d "$project" ]; then
+              continue
+            fi
+
+            cuda_count=$(find "$project" -maxdepth 1 -type f -name '*.cu' | wc -l)
+            readme_count=$(find "$project" -maxdepth 1 -type f -name 'README.md' | wc -l)
+
+            if [ "$cuda_count" -ne 1 ]; then
+              echo "Expected exactly one .cu file in: $project"
+              exit 1
+            fi
+
+            if [ "$readme_count" -ne 1 ]; then
+              echo "Missing README.md in: $project"
+              exit 1
+            fi
+
+            echo "Validated: $project"
+          done
+
+      - name: Check CUDA source count
         shell: bash
         run: |
           set -e
@@ -62,8 +116,8 @@ jobs:
 
           echo "CUDA source files found: $cuda_files"
 
-          if [ "$cuda_files" -eq 0 ]; then
-            echo "No CUDA source files were found."
+          if [ "$cuda_files" -ne 25 ]; then
+            echo "Expected exactly 25 CUDA source files."
             exit 1
           fi
 
